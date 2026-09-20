@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+/* FFCC design tokens. Colors are documented in docs/brand.md.
+   Motion values come from the Parabox motion token set. */
+@theme {
+  /* Brand copper, read from FFCC's logo and favicon */
+  --color-copper-50: #fbf6f0;
+  --color-copper-100: #f2e0cf;
+  --color-copper-300: #e6c29f;
+  --color-copper-500: #cd853f;
+  --color-copper-600: #b9723a;
+  --color-copper-700: #9a5a26;
+  --color-copper-800: #7a441b;
+  --color-copper-900: #5c3314;
+
+  /* Neutrals */
+  --color-ink: #1c1815;
+  --color-ink-soft: #4a433e;
+  --color-ink-muted: #6b635d;
+  --color-paper: #ffffff;
+  --color-mist: #f5f4f2;
+  --color-line: #dcdad6;
+  --color-slot: #d9d9d9;
+
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: var(--font-playfair), Georgia, serif;
+
+  --text-h1: clamp(2.375rem, 1.4rem + 4.2vw, 4rem);
+  --text-h1--line-height: 1;
+  --text-h2: clamp(1.875rem, 1.35rem + 2.2vw, 2.8125rem);
+  --text-h2--line-height: 1.1;
+  --text-h3: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  --text-h3--line-height: 1.15;
+
+  --container-site: 75rem;
+
+  --radius-btn: 0px;
+  --radius-card: 0px;
+  --radius-modal: 12px;
+
+  --shadow-menu: 0 2px 13px rgb(0 0 0 / 0.1);
+  --shadow-modal: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+  --shadow-header: 0 8px 24px rgb(0 0 0 / 0.12);
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+
+  --animate-hero-in: hero-in 900ms var(--ease-out-expo) both;
+  --animate-fade-in: fade-in 400ms var(--ease-out-quart) both;
+}
+
+/* Duration tokens (Parabox motion). Tailwind v4 has no duration theme
+   namespace, so these live on :root with matching utilities below. */
+:root {
+  --dur-instant: 100ms;
+  --dur-micro: 160ms;
+  --dur-fast: 240ms;
+  --dur-base: 400ms;
+  --dur-reveal: 640ms;
+  --dur-slow: 900ms;
+}
+
+@utility duration-instant { transition-duration: var(--dur-instant); }
+@utility duration-micro { transition-duration: var(--dur-micro); }
+@utility duration-fast { transition-duration: var(--dur-fast); }
+@utility duration-base { transition-duration: var(--dur-base); }
+@utility duration-reveal { transition-duration: var(--dur-reveal); }
+@utility duration-slow { transition-duration: var(--dur-slow); }
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-copper-600);
+    outline-offset: 3px;
+    transition: outline-offset var(--dur-instant) var(--ease-standard);
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-copper-300);
+  }
+
+  ::selection {
+    background: var(--color-copper-100);
+    color: var(--color-ink);
+  }
+}
+
+/* Long-form FFCC text (beliefs, history, FAQ answers). */
+@utility prose-ffcc {
+  overflow-wrap: break-word;
+
+  & p + p {
+    margin-top: 1.1em;
+  }
+  & a {
+    color: var(--color-copper-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    /* Long email addresses must wrap on narrow phones. */
+    overflow-wrap: anywhere;
+    transition: color var(--dur-micro) var(--ease-standard);
+  }
+  & a:hover {
+    color: var(--color-copper-900);
+  }
+}
+
+@utility link-copper {
+  color: var(--color-copper-700);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--dur-micro) var(--ease-standard);
+  &:hover {
+    color: var(--color-copper-900);
+  }
+}
+
+/* Scroll reveal. One pattern, used site wide.
+   Hidden state is scoped to .js-motion so content shows with JavaScript off. */
+.js-motion [data-reveal="block"],
+.js-motion [data-reveal="group"] > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--dur-reveal) var(--ease-out-quart),
+    transform var(--dur-reveal) var(--ease-out-quart);
+}
+
+.js-motion [data-reveal="block"][data-revealed="true"],
+.js-motion [data-reveal="group"][data-revealed="true"] > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* Card grid stagger: 90ms each, capped near 600ms total. */
+.js-motion [data-reveal="group"] > *:nth-child(2) { transition-delay: 90ms; }
+.js-motion [data-reveal="group"] > *:nth-child(3) { transition-delay: 180ms; }
+.js-motion [data-reveal="group"] > *:nth-child(4) { transition-delay: 270ms; }
+.js-motion [data-reveal="group"] > *:nth-child(5) { transition-delay: 360ms; }
+.js-motion [data-reveal="group"] > *:nth-child(6) { transition-delay: 450ms; }
+.js-motion [data-reveal="group"] > *:nth-child(n + 7) { transition-delay: 540ms; }
+
+/* Event detail dialog */
+dialog.event-dialog {
+  opacity: 0;
+  transform: translateY(10px) scale(0.97);
+  transition:
+    opacity var(--dur-fast) var(--ease-out-quart),
+    transform var(--dur-fast) var(--ease-out-quart),
+    overlay var(--dur-fast) allow-discrete,
+    display var(--dur-fast) allow-discrete;
+}
+
+dialog.event-dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  dialog.event-dialog[open] {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+}
+
+dialog.event-dialog::backdrop {
+  background: rgb(0 0 0 / 0);
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    overlay var(--dur-fast) allow-discrete,
+    display var(--dur-fast) allow-discrete;
+}
+
+dialog.event-dialog[open]::backdrop {
+  background: rgb(0 0 0 / 0.65);
+}
+
+@starting-style {
+  dialog.event-dialog[open]::backdrop {
+    background: rgb(0 0 0 / 0);
+  }
+}
+
+/* Reduced motion: content arrives with a short fade and no travel. */
+@media (prefers-reduced-motion: reduce) {
+  .js-motion [data-reveal="block"],
+  .js-motion [data-reveal="group"] > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
